@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .question {
+            display: none;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 20px;
+            float: right;
+            transition: background-color 0.3s;
+        }
+      
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .result p {
+            font-size: 18px;
+        }
+        .exit-button,
+        .repeat-button {
+            background-color: #f44336;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        .centered-image {
+            display: block; /* Make the image a block element */
+            margin: 0 auto; /* Set margin to 'auto' horizontally */
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="quizContainer">
+        <div id="startPage">
+            <img id="logo" src="D:\python projects\logo.png" width="120" height="100" alt="Logo" class="centered-image"> <!-- Replace 'https://example.com/path/to/your/logo.png' with your actual hosted logo URL -->
+            <h1>Welcome to Math Quiz</h1>
+            <form id="userInfoForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br>
+                <button type="button" id="startQuizButton">Start Quiz</button>
+            </form>
+        </div>
+
+        <div class="question" id="question1">
+            <p>1. What is the value of 3 × (4 + 2)?</p>
+            <input type="radio" name="q1" value="A"> A) 12<br>
+            <input type="radio" name="q1" value="B"> B) 18<br>
+            <input type="radio" name="q1" value="C"> C) 24<br>
+            <input type="radio" name="q1" value="D"> D) 36<br>
+            <button type="button" class="nextButton">Next</button>
+        </div>
+
+        <div class="question" id="question2">
+            <p>2. What is 8 ÷ 2 + 3?</p>
+            <input type="radio" name="q2" value="A"> A) 5<br>
+            <input type="radio" name="q2" value="B"> B) 6<br>
+            <input type="radio" name="q2" value="C"> C) 7<br>
+            <input type="radio" name="q2" value="D"> D) 8<br>
+            <button type="button" class="nextButton">Next</button>
+        </div>
+
+        <div class="question" id="question3">
+            <p>3. What is 2^3 - 4?</p>
+            <input type="radio" name="q3" value="A"> A) 2<br>
+            <input type="radio" name="q3" value="B"> B) 4<br>
+            <input type="radio" name="q3" value="C"> C) 6<br>
+            <input type="radio" name="q3" value="D"> D) 8<br>
+            <button type="button" class="nextButton">Next</button>
+        </div>
+
+        <div class="question" id="question4">
+            <p>4. What is 15 - (3 × 4)?</p>
+            <input type="radio" name="q4" value="A"> A) 3<br>
+            <input type="radio" name="q4" value="B"> B) 7<br>
+            <input type="radio" name="q4" value="C"> C) 9<br>
+            <input type="radio" name="q4" value="D"> D) 12<br>
+            <button type="button" class="nextButton">Next</button>
+        </div>
+
+        <div class="question" id="question5">
+            <p>5. What is 2 × 4 + 6?</p>
+            <input type="radio" name="q5" value="A"> A) 10<br>
+            <input type="radio" name="q5" value="B"> B) 14<br>
+            <input type="radio" name="q5" value="C"> C) 16<br>
+            <input type="radio" name="q5" value="D"> D) 20<br>
+            <button type="button" class="nextButton">Next</button>
+        </div>
+
+        <div class="result" id="result">
+            <h2>Quiz Result</h2>
+            <p>Your score: <span id="score"></span>/5</p>
+            <button class="exit-button" id="exitButton">Exit</button>
+            <button class="repeat-button" id="repeatButton">Repeat Exam</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        const totalQuestions = 5;
+
+        const quizContainer = document.getElementById('quizContainer');
+        const startPage = document.getElementById('startPage');
+        const questions = document.querySelectorAll('.question');
+        const resultDiv = document.getElementById('result');
+
+        document.getElementById('startQuizButton').addEventListener('click', function() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            if (!name || !email) {
+                alert('Please enter both your name and email to start the quiz.');
+                return;
+            }
+            startPage.style.display = 'none';
+            questions[currentQuestion - 1].style.display = 'block';
+        });
+
+        document.querySelectorAll('.nextButton').forEach(button => {
+            button.addEventListener('click', function() {
+                questions[currentQuestion - 1].style.display = 'none';
+                currentQuestion++;
+                if (currentQuestion <= totalQuestions) {
+                    questions[currentQuestion - 1].style.display = 'block';
+                    if (currentQuestion === totalQuestions) {
+                        document.querySelector('.nextButton:last-child').textContent = 'Submit Quiz';
+                    }
+                } else {
+                    // Show result
+                    showResult();
+                }
+            });
+        });
+
+        function showResult() {
+            const answers = ['B', 'C', 'B', 'A', 'B']; // Correct answers
+            let score = 0;
+
+            // Check user's answers
+            for (let i = 1; i <= totalQuestions; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedAnswer && selectedAnswer.value === answers[i - 1]) {
+                    score++;
+                }
+            }
+
+            // Display result
+            const scoreDisplay = document.getElementById('score');
+            scoreDisplay.textContent = score;
+            resultDiv.style.display = 'block';
+
+            // Save response to CSV
+            saveToCSV(score);
+        }
+
+        function saveToCSV(score) {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const response = `"${name}","${email}",${score}/5\n`;
+
+            // Here you would send the response data to your server-side script for further processing
+            // Example: You can use fetch() to send a POST request to your server
+            // Replace 'https://your-server.com/save_response.php' with your actual server-side script URL
+            fetch('D:\server.csv', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    score: score
+                })
+            }).then(response => {
+                // Handle server response if needed
+                console.log('Response saved successfully.');
+            }).catch(error => {
+                console.error('Error saving response:', error);
+            });
+        }
+
+        document.getElementById('exitButton').addEventListener('click', function() {
+            window.close(); // Close the tab
+        });
+
+        document.getElementById('repeatButton').addEventListener('click', function() {
+            location.reload(); // Reload the page to repeat the exam
+        });
+    </script>
+</body>
+</html>
